@@ -11,11 +11,16 @@ from selenium.webdriver.common.keys import Keys
 from datetime import datetime,timezone,timedelta
 import requests
 import mydate
+import sys
+
+name = 'Ethan Bensman'
+url = sys.argv[1]
+if url == None:
+	print("No URL Given")
+	exit(1)
+
 
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
-name = 'Ethan Bensman'
-
-
 def isDate(pDate):
 	for ch in pDate:
 		if ch.isdigit():
@@ -82,7 +87,7 @@ def getEvents(dates,times):
 
 def main():
 	driver = webdriver.Chrome()
-	driver.get("https://www.when2meet.com/?8030438-YXUhk")
+	driver.get(url)
 
 	moreDates = True
 	i = 1
@@ -133,7 +138,6 @@ def main():
 	element.click()
 
 
-	url = "https://www.when2meet.com/?8030438-YXUhk"
 	r = requests.get(url)
 	bsObj = BeautifulSoup(r.text, "html.parser")
 	cells = [x.get("id") for x in bsObj.findAll("div", id=lambda x: x and x.startswith('YouTime'))]
