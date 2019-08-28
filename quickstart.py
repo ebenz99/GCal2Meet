@@ -44,6 +44,7 @@ def getEvents(dates,times):
 
 
     start_time = (datetime.strptime((dates[0] + ' ' + '2019' + '  ' + times[0]), '%b %d %Y %I %p')).isoformat('T')+ "Z"
+    end_time = (datetime.strptime((dates[len(dates)-1] + ' ' + '2019' + '  ' + times[len(times)-1]), '%b %d %Y %I %p')).isoformat('T')+ "Z"
     #real_time = (start_time.isoformat('T')+ "Z") 
 
 
@@ -51,9 +52,9 @@ def getEvents(dates,times):
 
     # Call the Calendar API
     #now = datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
-    print('Getting the upcoming 10 events')
-    events_result = service.events().list(calendarId='primary', timeMin=start_time,
-                                        maxResults=10, singleEvents=True,
+    print('Getting the upcoming 20 events')
+    events_result = service.events().list(calendarId='primary', timeMin=start_time, timeMax=end_time,
+                                        maxResults=20, singleEvents=True,
                                         orderBy='startTime').execute()
     events = events_result.get('items', [])
 
@@ -61,7 +62,8 @@ def getEvents(dates,times):
         print('No upcoming events found.')
     for event in events:
         start = event['start'].get('dateTime', event['start'].get('date'))
-        print(start, event['summary'])
+        end = event['end'].get('dateTime', event['end'].get('date'))
+        print(start, end, event['summary'])
     return events
 
 def main():
