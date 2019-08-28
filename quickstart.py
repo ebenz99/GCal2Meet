@@ -34,6 +34,8 @@ def getEvents():
 
     service = build('calendar', 'v3', credentials=creds)
 
+
+    #timestamp = 2019-08-29T09:00:00+00:00Z
     # Call the Calendar API
     now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
     print('Getting the upcoming 10 events')
@@ -54,3 +56,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+#timezone with offset
