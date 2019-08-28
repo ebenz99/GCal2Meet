@@ -1,4 +1,5 @@
 import datetime 
+
 class myDate:
 	def __init__(self,start,end):
 		self.start = start - datetime.timedelta(minutes=15)
@@ -8,10 +9,10 @@ class myDate:
 			return myDate(self.start,second.end)
 		else:
 			None
-	def inDate(start,end):
-		if time.start > self.start and time.start < self.end:
+	def inDate(self,start,end):
+		if start > self.start and start < self.end:
 			return True
-		elif time.end >self.start and time.end < self.end:
+		if end >self.start and end < self.end:
 			return True
 		else:
 			return False

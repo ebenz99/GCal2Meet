@@ -52,11 +52,13 @@ def getEvents(dates,times):
 	service = build('calendar', 'v3', credentials=creds)
 
 	start_time = (datetime.strptime((dates[0] + ' ' + str(getYear(dates[0],times[0])) + '  ' + times[0]), '%b %d %Y %I %p')).isoformat('T')+ "Z"
-	end_time = (datetime.strptime((dates[len(dates)-1] + ' ' + str(getYear(dates[len(dates)-1],times[len(dates)-1])) + '  ' + times[len(times)-1]), '%b %d %Y %I %p')).isoformat('T')+ "Z"
+	end_time = (datetime.strptime((dates[len(dates)-1] + ' ' + str(getYear(dates[len(dates)-1],times[len(dates)-1])) + '  ' + times[len(times)-1]), '%b %d %Y %I %p')+timedelta(days=1)).isoformat('T')+ "Z"
+	#end_time = (datetime.strptime((dates[len(dates)-1] + ' ' + str(getYear(dates[len(dates)-1],times[len(dates)-1])) + '  11 PM'), '%b %d %Y %I %p')).isoformat('T')+ "Z"
+	print("END TIME IS ")
+	print(end_time)
 
 	# Call the Calendar API
 	#now = datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
-	print('Getting the upcoming 20 events')
 	events_result = service.events().list(calendarId='primary', timeMin=start_time, timeMax=end_time,
 										singleEvents=True,
 										orderBy='startTime').execute()
@@ -64,10 +66,17 @@ def getEvents(dates,times):
 
 	if not events:
 		print('No upcoming events found.')
+	rlist = []
 	for event in events:
 		start = event['start'].get('dateTime', event['start'].get('date'))
 		end = event['end'].get('dateTime', event['end'].get('date'))
 		print(start, end, event['summary'])
+		if len(start) < 11:
+			rlist.append(event)
+	print("RLIST LEN IS")
+	print(len(rlist))
+	for event in rlist:
+		events.remove(event)
 	return events
 
 def main():
@@ -112,13 +121,49 @@ def main():
 		startstr = event['start'].get('dateTime', event['start'].get('date'))
 		#print(startstr)
 		endstr = event['end'].get('dateTime', event['end'].get('date'))
-		start = datetime.strptime(startstr, '%Y-%m-%dT%H:%M:%f%z')
-		end = datetime.strptime(endstr, '%Y-%m-%dT%H:%M:%f%z')
+		start = datetime.strptime(startstr, '%Y-%m-%dT%H:%M:%f%z').replace(tzinfo=None)
+		end = datetime.strptime(endstr, '%Y-%m-%dT%H:%M:%f%z').replace(tzinfo=None)
 		myEvents.append(mydate.myDate(start,end))
 
-	print(myEvents)
+	
+	element = driver.find_element_by_xpath(('//*[@id="name"]'))
+	element.send_keys("Ethan Bensman")
+	element = driver.find_element_by_xpath('//*[@id="SignIn"]/div/div/input')
+	element.click()
 
 
+	url = "https://www.when2meet.com/?8030438-YXUhk"
+	r = requests.get(url)
+	bsObj = BeautifulSoup(r.text, "html.parser")
+	cells = [x.get("id") for x in bsObj.findAll("div", id=lambda x: x and x.startswith('YouTime'))]
+
+	grid = [[] for date in dates]
+	print(grid)
+
+	for idx,cell in enumerate(cells):
+		grid[idx%len(dates)].append(cell)
+	
+	dic = {}
+
+	for rIdx, row in enumerate(grid):
+		for cIdx, num in enumerate(row):
+			starttime = (datetime.strptime((dates[rIdx] + ' ' + str(getYear(dates[rIdx],times[0])) + '  ' + times[0]), '%b %d %Y %I %p') + timedelta(minutes=15*cIdx))
+			endtime = (starttime + timedelta(minutes=15))
+			dic[num] = True
+			for myEvent in myEvents:
+				if myEvent.inDate(starttime,endtime) == True:
+					dic[num] = False
+
+	print(dic)
+
+
+	for element in dic.keys():
+		if dic[element] == True:
+			el = driver.find_element_by_xpath(('//*[@id="' + element + '"]'))
+			el.click()
+
+	while True:
+		pass
 
 if __name__ == "__main__":
 	main()
