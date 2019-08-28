@@ -5,11 +5,14 @@ import os.path
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
+from datetime import datetime,timezone
+import pytz
+
 
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 
-def getEvents():
+def getEvents(dates,times):
     """Shows basic usage of the Google Calendar API.
     Prints the start and name of the next 10 events on the user's calendar.
     """
@@ -35,11 +38,21 @@ def getEvents():
     service = build('calendar', 'v3', credentials=creds)
 
 
+
+
     #timestamp = 2019-08-29T09:00:00+00:00Z
+
+
+    start_time = (datetime.strptime((dates[0] + ' ' + '2019' + '  ' + times[0]), '%b %d %Y %I %p')).isoformat('T')+ "Z"
+    #real_time = (start_time.isoformat('T')+ "Z") 
+
+
+
+
     # Call the Calendar API
-    now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
+    #now = datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
     print('Getting the upcoming 10 events')
-    events_result = service.events().list(calendarId='primary', timeMin=now,
+    events_result = service.events().list(calendarId='primary', timeMin=start_time,
                                         maxResults=10, singleEvents=True,
                                         orderBy='startTime').execute()
     events = events_result.get('items', [])
@@ -52,7 +65,10 @@ def getEvents():
     return events
 
 def main():
-    print(getEvents())
+    #print(getEvents())
+    dates = ['Aug 29', 'Aug 30', 'Aug 31', 'Sep 1', 'Sep 2']
+    times = ['9 AM', '10 AM', '11 AM', '12 PM', '1 PM', '2 PM', '3 PM', '4 PM', '5 PM']
+    getEvents(dates,times)
 
 if __name__ == '__main__':
     main()

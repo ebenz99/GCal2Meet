@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-from datetime import datetime,timezone
+from datetime import datetime,timezone,timedelta
 import pytz
 
 
@@ -60,8 +60,10 @@ print(dates)
 print(times)
 
 start_time = datetime.strptime((dates[0] + ' ' + str(getYear(dates[0],times[0])) + '  ' + times[0]), '%b %d %Y %I %p')
-print(start_time)
-print(start_time.replace(tzinfo=pytz.UTC))
+start_time += timedelta(microseconds=0)
+print(start_time.isoformat('T')+ "Z") 
+#print(start_time)
+#print(start_time.replace(tzinfo=pytz.UTC))
 print(start_time.replace(tzinfo=pytz.UTC).isoformat('T')+ "Z") 
 
 #xpath of times - //*[(@id = "GroupGrid")]//div[(((count(preceding-sibling::*) + 1) = 3) and parent::*)]//div//div//div
