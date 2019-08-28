@@ -4,7 +4,7 @@ import os.path
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
-import pytz
+#import pytz
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -13,6 +13,8 @@ import requests
 import mydate
 
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
+name = 'Ethan Bensman'
+
 
 def isDate(pDate):
 	for ch in pDate:
@@ -54,8 +56,7 @@ def getEvents(dates,times):
 	start_time = (datetime.strptime((dates[0] + ' ' + str(getYear(dates[0],times[0])) + '  ' + times[0]), '%b %d %Y %I %p')).isoformat('T')+ "Z"
 	end_time = (datetime.strptime((dates[len(dates)-1] + ' ' + str(getYear(dates[len(dates)-1],times[len(dates)-1])) + '  ' + times[len(times)-1]), '%b %d %Y %I %p')+timedelta(days=1)).isoformat('T')+ "Z"
 	#end_time = (datetime.strptime((dates[len(dates)-1] + ' ' + str(getYear(dates[len(dates)-1],times[len(dates)-1])) + '  11 PM'), '%b %d %Y %I %p')).isoformat('T')+ "Z"
-	print("END TIME IS ")
-	print(end_time)
+
 
 	# Call the Calendar API
 	#now = datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
@@ -127,7 +128,7 @@ def main():
 
 	
 	element = driver.find_element_by_xpath(('//*[@id="name"]'))
-	element.send_keys("Ethan Bensman")
+	element.send_keys(name)
 	element = driver.find_element_by_xpath('//*[@id="SignIn"]/div/div/input')
 	element.click()
 

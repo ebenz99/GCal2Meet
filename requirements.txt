@@ -1,3 +1,7 @@
-google-api-python-client 
-google-auth-httplib2 
-google-auth-oauthlib
+google-api-python-client==1.7.11 
+google-auth-httplib2==0.0.3
+google-auth-oauthlib==0.4.0
+selenium==3.141.0
+beautifulsoup4==4.7.1
+requests==2.21.0
+requests-oauthlib==1.2.0
