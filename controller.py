@@ -29,6 +29,7 @@ def isDate(pDate):
 
 def getYear(date, time):
 	year = datetime.now().year
+	return year
 	if datetime.now() > datetime.strptime((date + ' ' + str(year) + '  ' + time), '%b %d %Y %I %p'):
 		year += 1
 	return year

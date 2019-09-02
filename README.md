@@ -11,4 +11,4 @@ A repository that automates filling out when2meet's with your google calendar.
 5. Run with the command `python3 controller.py <when2meet URL>`
 
 ## Known Issue
-1. If you're filling out a when2meet which includes your current day, certain behaviors are undefined
+1. If a When2Meet spans multiple years, it fills based on your calendar for the current year
