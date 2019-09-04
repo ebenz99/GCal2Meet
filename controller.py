@@ -21,19 +21,23 @@ if url == None:
 
 
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
+
+#returns true if a string contains a digit
 def isDate(pDate):
 	for ch in pDate:
 		if ch.isdigit():
 			return True
 	return False
 
+#Returns the current year
 def getYear(date, time):
 	year = datetime.now().year
 	return year
-	if datetime.now() > datetime.strptime((date + ' ' + str(year) + '  ' + time), '%b %d %Y %I %p'):
-		year += 1
-	return year
+	#if datetime.now() > datetime.strptime((date + ' ' + str(year) + '  ' + time), '%b %d %Y %I %p'):
+	#	year += 1
+	#return year
 
+#gets list of events for date range in calendar
 def getEvents(dates,times):
 	"""Shows basic usage of the Google Calendar API.
 	Prints the start and name of the next 10 events on the user's calendar.
@@ -59,6 +63,8 @@ def getEvents(dates,times):
 
 	service = build('calendar', 'v3', credentials=creds)
 
+
+	#creates datetime objects from string dates given
 	start_time = (datetime.strptime((dates[0] + ' ' + str(getYear(dates[0],times[0])) + '  ' + times[0]), '%b %d %Y %I %p')).isoformat('T')+ "Z"
 	end_time = (datetime.strptime((dates[len(dates)-1] + ' ' + str(getYear(dates[len(dates)-1],times[len(dates)-1])) + '  ' + times[len(times)-1]), '%b %d %Y %I %p')+timedelta(days=1)).isoformat('T')+ "Z"
 	#end_time = (datetime.strptime((dates[len(dates)-1] + ' ' + str(getYear(dates[len(dates)-1],times[len(dates)-1])) + '  11 PM'), '%b %d %Y %I %p')).isoformat('T')+ "Z"
@@ -78,10 +84,11 @@ def getEvents(dates,times):
 		start = event['start'].get('dateTime', event['start'].get('date'))
 		end = event['end'].get('dateTime', event['end'].get('date'))
 		print(start, end, event['summary'])
+		#if it's an all day event, add it to the list of items to be removed from the list of dates
+		#this was done assuming all-day events are used as more of a reminder than an actual all-day event
 		if len(start) < 11:
 			rlist.append(event)
-	print("RLIST LEN IS")
-	print(len(rlist))
+	#remove all day events from events list
 	for event in rlist:
 		events.remove(event)
 	return events
@@ -94,6 +101,7 @@ def main():
 	i = 1
 	dates = []
 
+	#this gets dates polled for by when2meet
 	while moreDates:
 		try:
 			element = driver.find_element_by_xpath(('//*[@id="GroupGrid"]/div[3]/div[' + str(i) +']'))
@@ -105,6 +113,7 @@ def main():
 		except:
 			moreDates = False
 
+	#gets times polled for by when2meet
 	moreTimes = True
 	i = 4
 	times = []
@@ -141,33 +150,34 @@ def main():
 
 	r = requests.get(url)
 	bsObj = BeautifulSoup(r.text, "html.parser")
+	#gets the ids of all the clickable time divs in order
 	cells = [x.get("id") for x in bsObj.findAll("div", id=lambda x: x and x.startswith('YouTime'))]
 
 	grid = [[] for date in dates]
 	print(grid)
 
+	#makes a 2-D array resembling the grid of the when2meet site
 	for idx,cell in enumerate(cells):
 		grid[idx%len(dates)].append(cell)
 	
 	dic = {}
 
+	#marks which id's are associated with times i'm free
 	for rIdx, row in enumerate(grid):
 		for cIdx, num in enumerate(row):
 			starttime = (datetime.strptime((dates[rIdx] + ' ' + str(getYear(dates[rIdx],times[0])) + '  ' + times[0]), '%b %d %Y %I %p') + timedelta(minutes=15*cIdx))
-			endtime = (starttime + timedelta(minutes=15))
+			endtime = (starttime + timedelta(minutes=15))	#add 15 minute cushion to start and end of each event
 			dic[num] = True
 			for myEvent in myEvents:
 				if myEvent.inDate(starttime,endtime) == True:
 					dic[num] = False
 
-	print(dic)
-
-
+	#clicks divs where I'm free
 	for element in dic.keys():
 		if dic[element] == True:
 			el = driver.find_element_by_xpath(('//*[@id="' + element + '"]'))
 			el.click()
-
+	#keeps website open for review until process ended
 	while True:
 		pass
 
