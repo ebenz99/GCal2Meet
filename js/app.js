@@ -23,7 +23,7 @@ while (moreDates == true){
 	catch {
 		moreDates = false;
 	}
-	if (i > 10){
+	if (i > 100){
 		break;
 	}
 }
