@@ -3,10 +3,9 @@ function myFunction() {
 }
 
 function getElementByXpath(path) {
-  return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+	return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
 }
 
-myFunction();
 var i = 1;
 var moreDates = true;
 start = '//*[@id="GroupGrid"]/div[3]/div[';
@@ -14,7 +13,6 @@ start = '//*[@id="GroupGrid"]/div[3]/div[';
 while (moreDates == true){
 	try {
 		var el = start.concat(i.toString(10),']');
-		console.log(el);
 		var date = getElementByXpath(el);
 		console.log(date);
 		if (date == null){
@@ -29,6 +27,3 @@ while (moreDates == true){
 		break;
 	}
 }
-
-//*[@id="GroupGrid"]/div[3]/div[1]
-//*[@id="GroupGrid"]/div[3]/div[1]
