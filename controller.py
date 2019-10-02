@@ -176,7 +176,11 @@ def main():
 	for element in dic.keys():
 		if dic[element] == True:
 			el = driver.find_element_by_xpath(('//*[@id="' + element + '"]'))
-			el.click()
+			try:
+				el.click()
+			except:
+				print("UH OH")
+				pass
 	#keeps website open for review until process ended
 	while True:
 		pass
