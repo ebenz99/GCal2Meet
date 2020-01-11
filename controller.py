@@ -65,17 +65,38 @@ def getEvents(dates,times):
 
 
 	#creates datetime objects from string dates given
-	start_time = (datetime.strptime((dates[0] + ' ' + str(getYear(dates[0],times[0])) + '  ' + times[0]), '%b %d %Y %I %p')).isoformat('T')+ "Z"
-	end_time = (datetime.strptime((dates[len(dates)-1] + ' ' + str(getYear(dates[len(dates)-1],times[len(dates)-1])) + '  ' + times[len(times)-1]), '%b %d %Y %I %p')+timedelta(days=1)).isoformat('T')+ "Z"
+	start_time = (datetime.strptime((dates[0] + ' ' + str(getYear(dates[0],times[0])) + ' ' + times[0]), '%b %d %Y %I %p')).isoformat('T')+ "Z"
+	# print(times)
+	# print(((dates[len(dates)-1] + ' ' + str(getYear(dates[len(dates)-1],times[len(dates)-1])) + '  ' + times[len(times)-1])))
+	# exit(1)
+	end_time = None
+	if times[len(times)-1] != "M":
+		end_time = (datetime.strptime((dates[len(dates)-1] + ' ' + str(getYear(dates[len(dates)-1],times[len(dates)-1])) + '  ' + times[len(times)-1]), '%b %d %Y %I %p')+timedelta(days=1)).isoformat('T')+ "Z"
+	else:
+		end_time = (datetime.strptime((dates[len(dates)-1] + ' ' + str(getYear(dates[len(dates)-1],times[len(dates)-1])) + '  ' + "12 AM"), '%b %d %Y %I %p')+timedelta(days=1)).isoformat('T')+ "Z"
+
 	#end_time = (datetime.strptime((dates[len(dates)-1] + ' ' + str(getYear(dates[len(dates)-1],times[len(dates)-1])) + '  11 PM'), '%b %d %Y %I %p')).isoformat('T')+ "Z"
 
 
 	# Call the Calendar API
 	#now = datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
+	# page_token = None
+	# while True:
+	# 	calendar_list = service.calendarList().list(pageToken=page_token).execute()
+	# 	for calendar_list_entry in calendar_list['items']:
+	# 		print(calendar_list_entry['summary'])
+	# 	page_token = calendar_list.get('nextPageToken')
+	# 	if not page_token:
+	# 		break
 	events_result = service.events().list(calendarId='primary', timeMin=start_time, timeMax=end_time,
 										singleEvents=True,
 										orderBy='startTime').execute()
 	events = events_result.get('items', [])
+
+	# events_result = service.events().list(calendarId='Meetings', timeMin=start_time, timeMax=end_time,
+	# 									singleEvents=True,
+	# 									orderBy='startTime').execute()
+	# events.extend(events_result)
 
 	if not events:
 		print('No upcoming events found.')

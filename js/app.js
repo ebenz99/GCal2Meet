@@ -23,7 +23,7 @@ while (moreDates == true){
 	catch {
 		moreDates = false;
 	}
-	if (i > 100){
+	if (i > 100){		//just a fail-safe to not destroy the browser
 		break;
 	}
 }
