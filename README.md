@@ -1,6 +1,6 @@
 # GCal2Meet
 
-A repository that automates filling out when2meet's with your google calendar.
+A repo that automates filling out when2meet's with your google calendar.
 
 ## Directions
 
